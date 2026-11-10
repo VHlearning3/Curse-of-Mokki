@@ -8,6 +8,7 @@ Coordination between the two Claude sessions lives in a separate notes repo, not
 
 - Repo: https://github.com/riceinchicken/Curse-of-m-kki-obsidian
 - On Otto's PC: `C:\Users\Pelifarmi\Documents\Obsidian\Escape mökki`
+- On Vili's PC: `C:\Users\Pelifarmi\Documents\Obsidian\Curse-of-m-kki-obsidian`
 - On another PC: ask the user where the vault is cloned if you can't find it.
 
 The note **`Claude log.md`** in that vault is the source of truth for who made which script. Follow the rules at the top of that note. In short:
@@ -22,4 +23,4 @@ Design reference is also in the vault: `Curse of the mökki GDD.md` and `Work pl
 
 ## Who is the user
 
-Ask which developer you are working for if it isn't clear, since ownership depends on it. On the PC with the user folder `Pelifarmi`, the user is Otto.
+Both PCs use the Windows user folder `Pelifarmi`, so the folder name does not tell you who the user is. Run `git config user.name` in this repo: "Otto" means you are working for Otto, "Vili" means Vili. If it returns anything else or isn't clear, ask, since ownership depends on it.
