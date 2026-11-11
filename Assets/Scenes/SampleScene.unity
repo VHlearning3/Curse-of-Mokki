@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -256,6 +257,40 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08f50d32e3db5c04fbe155daee4e19b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmokingEffect
+  smokeKey: 21
+  jointRestPosition: {x: 0.22, y: -0.2, z: 0.55}
+  jointRestRotation: {x: 55, y: -30, z: 0}
+  jointMouthPosition: {x: 0.02, y: -0.15, z: 0.42}
+  jointMouthRotation: {x: 82, y: 0, z: 0}
+  jointLength: 0.12
+  jointThickness: 0.014
+  paperColor: {r: 0.92, g: 0.9, b: 0.82, a: 1}
+  emberColor: {r: 0.7, g: 0.2, b: 0.05, a: 1}
+  emberGlowColor: {r: 1, g: 0.6, b: 0.15, a: 1}
+  raiseTime: 0.5
+  inhaleTime: 1.2
+  lowerTime: 0.6
+  fadeInTime: 1.5
+  holdTime: 6
+  fadeOutTime: 4
+  hazeColor: {r: 0.45, g: 0.75, b: 0.35, a: 1}
+  hazeMaxAlpha: 0.25
+  fovSwayAmount: 6
+  fovSwaySpeed: 0.8
+  puffParticles: 25
+  smokeColor: {r: 0.85, g: 0.85, b: 0.85, a: 0.5}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
