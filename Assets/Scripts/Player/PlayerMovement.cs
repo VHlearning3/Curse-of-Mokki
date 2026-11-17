@@ -7,18 +7,32 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float sneakSpeed = 1.5f;
     [SerializeField] private float sprintSpeed = 6f;
     [SerializeField] private float gravity = -9.81f;
-
+    [SerializeField] private float mouseSensitivity = 0.1f;
+    [SerializeField] private Transform cameraTransform;
+    
     private CharacterController controller;
     private float fallSpeed;
+    private float lookAngle;
 
     void Awake()
     {
+        Cursor.lockState =
+            CursorLockMode.Locked;
         controller = GetComponent<CharacterController>();
     }
 
     void Update()
     {
+        float mouseX = 
+            Mouse.current.delta.ReadValue().x;
+        transform.Rotate(0f, mouseX * mouseSensitivity, 0f);
         float currentSpeed;
+
+        float mouseY =
+            Mouse.current.delta.ReadValue().y;
+        lookAngle -= mouseY * mouseSensitivity;
+        lookAngle = Mathf.Clamp(lookAngle, -80f, 80f);
+        cameraTransform.localRotation = Quaternion.Euler(lookAngle, 0f, 0f);
         if (Keyboard.current.leftCtrlKey.isPressed)
         {
             currentSpeed = sneakSpeed;
