@@ -9,7 +9,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float mouseSensitivity = 0.1f;
     [SerializeField] private Transform cameraTransform;
-    
+    [SerializeField] private bool isHidden;
+    [SerializeField] private bool canHide;
+    public bool IsHidden => isHidden;
+
     private CharacterController controller;
     private float fallSpeed;
     private float lookAngle;
@@ -23,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        float mouseX = 
+        float mouseX =
             Mouse.current.delta.ReadValue().x;
         transform.Rotate(0f, mouseX * mouseSensitivity, 0f);
         float currentSpeed;
@@ -33,6 +36,14 @@ public class PlayerMovement : MonoBehaviour
         lookAngle -= mouseY * mouseSensitivity;
         lookAngle = Mathf.Clamp(lookAngle, -80f, 80f);
         cameraTransform.localRotation = Quaternion.Euler(lookAngle, 0f, 0f);
+        if (Keyboard.current.eKey.wasPressedThisFrame && canHide)
+        {
+            isHidden = !isHidden;
+        }
+        if (isHidden)
+        {
+            return;
+        }
         if (Keyboard.current.leftCtrlKey.isPressed)
         {
             currentSpeed = sneakSpeed;
@@ -74,5 +85,21 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocity = direction * currentSpeed;
         velocity.y = fallSpeed;
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("HidingSpot"))
+        {
+            canHide = true;
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("HidingSpot"))
+        {
+            canHide = false;
+        }
     }
 }
