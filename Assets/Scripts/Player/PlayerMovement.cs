@@ -26,6 +26,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (PauseMenu.IsPaused)
+        {
+            return;
+        }
         float mouseX =
             Mouse.current.delta.ReadValue().x;
         transform.Rotate(0f, mouseX * mouseSensitivity, 0f);
@@ -80,6 +84,7 @@ public class PlayerMovement : MonoBehaviour
         {
             fallSpeed = -2f;
         }
+        
         fallSpeed += gravity * Time.deltaTime;
 
         Vector3 velocity = direction * currentSpeed;
