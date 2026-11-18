@@ -16,6 +16,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float crouchHeight = 0.1f;
     [SerializeField] private float hideHeight = -0.2f;
     [SerializeField] private float cameraSmooth = 8f;
+    [SerializeField] private float normalFov = 60f;
+    [SerializeField] private float sprintFov = 70f;
+    private Camera playerCamera;
     private float cameraHeight;
     public bool IsHidden => isHidden;
 
@@ -25,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
+        playerCamera = cameraTransform.GetComponent<Camera>();
         cameraHeight = standHeight;
         Cursor.lockState =
             CursorLockMode.Locked;
@@ -53,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
         }
          
         float targetHeight;
+
         if (isHidden)
         {
             targetHeight = hideHeight;
@@ -67,8 +72,16 @@ public class PlayerMovement : MonoBehaviour
         }
         cameraHeight = Mathf.Lerp(cameraHeight, targetHeight, cameraSmooth * Time.deltaTime);
         cameraTransform.localPosition = new Vector3(0f, cameraHeight, 0f);
-
-
+        float targetFov;
+        if (Keyboard.current.leftShiftKey.isPressed && !isHidden && !Keyboard.current.leftCtrlKey.isPressed)
+        {
+            targetFov = sprintFov;
+        }
+        else
+        {
+            targetFov = normalFov;
+        }
+        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFov, cameraSmooth * Time.deltaTime);
         if (isHidden)
         {
             return;
