@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ITEM_Pills
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   displayName: Pills
-  icon: {fileID: 0}
+  icon: {fileID: 2216418865105919099, guid: db6a30ce010386f42abf1c16ccb3163a, type: 3}
   stackable: 1
   maxCount: 5
   showInHUD: 1
+  alwaysShowWhileCarried: 0
