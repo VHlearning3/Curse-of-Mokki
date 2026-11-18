@@ -2,11 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// The player's inventory: which items (ItemData) the player carries and how many.
-/// Put on the player. Pickups and doors (Otto's interaction) call Add / Has / Remove.
-/// No stone slot for now (stone throwing is Otto's).
-/// </summary>
+/// <summary>Items the player carries. Pickups and doors use Add / Has / Remove.</summary>
 [DisallowMultipleComponent]
 public class PlayerInventory : MonoBehaviour
 {

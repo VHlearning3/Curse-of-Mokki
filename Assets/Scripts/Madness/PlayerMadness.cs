@@ -3,16 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Madness system = the player's HP (GDD: Primary Mechanics).
-/// Madness goes from 0 (fully sane) to 100 (fully insane). Sanity = 100 - Madness.
-///
-/// - Getting hit while madness is at or above the death threshold (default 80 %) kills the player.
-///   A hit below the threshold only adds madness.
-/// - Drain sources (enemy aura, hiding place, ...) add madness over time at the depletion rate.
-///   Drain alone never kills; it stops at 100.
-/// - Passive sanity recovery lowers madness slowly, starting after a delay since madness last went up.
-///
-/// Put this on the player. Other scripts use the public API below.
+/// Madness = player HP (0 sane, 100 insane). A hit at or above the death threshold kills; drains add madness
+/// but never kill; sanity recovers passively after a delay.
 /// </summary>
 [DisallowMultipleComponent]
 public class PlayerMadness : MonoBehaviour
@@ -134,10 +126,7 @@ public class PlayerMadness : MonoBehaviour
 
     // --- Public API ---------------------------------------------------------
 
-    /// <summary>
-    /// Enemy hit. If madness is at or above the death threshold, the player dies.
-    /// Otherwise adds madness. Returns true if the hit killed the player.
-    /// </summary>
+    /// <summary>Enemy hit: kills at or above the death threshold, otherwise adds madness. True = killed.</summary>
     public bool TakeHit(float madnessAmount)
     {
         if (IsDead) return true;
@@ -176,11 +165,7 @@ public class PlayerMadness : MonoBehaviour
         timedRecoveries.Add(new TimedRecovery { remaining = amount, perSecond = amount / duration });
     }
 
-    /// <summary>
-    /// Starts draining sanity from a source (enemy aura, hiding place...). Call EndDrain with the
-    /// same source to stop. multiplier scales the depletion rate for this source.
-    /// Destroyed Unity objects are removed automatically.
-    /// </summary>
+    /// <summary>Starts a drain (enemy aura, hiding place). Stop it with EndDrain(same source).</summary>
     public void BeginDrain(object source, float multiplier = 1f)
     {
         if (source == null) return;

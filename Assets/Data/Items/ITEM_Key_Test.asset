@@ -17,3 +17,4 @@ MonoBehaviour:
   stackable: 0
   maxCount: 1
   showInHUD: 1
+  alwaysShowWhileCarried: 1

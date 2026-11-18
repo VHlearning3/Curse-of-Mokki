@@ -1,10 +1,7 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// Settings panel (GDD: music and SFX volume, music and SFX on/off). Used by both the main menu and the pause menu.
-/// Lives in the Menu_Settings prefab; the UI controls are assigned there and can be restyled freely.
-/// </summary>
+/// <summary>Settings panel (music / SFX), used in the main and pause menus. Restyle it in Menu_Settings.</summary>
 public class SettingsMenu : MonoBehaviour
 {
     [SerializeField] UnityEngine.UI.Slider musicVolume;

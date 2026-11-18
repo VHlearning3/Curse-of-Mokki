@@ -10,6 +10,9 @@ using UnityEditor.SceneManagement;
 /// <summary>Small helpers shared by the menus.</summary>
 public static class MenuUtility
 {
+    /// <summary>True while any menu covers the game (main menu, pause, death/end screen). Stop player input then.</summary>
+    public static bool AnyMenuOpen => MainMenu.IsOpen || PauseMenu.IsPaused || DeathEndScreen.IsOpen;
+
     /// <summary>Makes sure the scene has an EventSystem (needed for clicking buttons) that uses the new Input System.</summary>
     public static void EnsureEventSystem()
     {
@@ -49,10 +52,7 @@ public static class MenuUtility
         Debug.LogError($"[Menus] Scene \"{sceneName}\" not found. Add it to File > Build Profiles (Scene List).");
     }
 
-    /// <summary>
-    /// Restarts the current scene (placeholder for save point respawn).
-    /// skipMainMenu = true: a main menu in the scene stays closed after the reload.
-    /// </summary>
+    /// <summary>Restarts the scene (placeholder for save point respawn). skipMainMenu keeps the main menu closed.</summary>
     public static void ReloadCurrentScene(bool skipMainMenu)
     {
         Time.timeScale = 1f;

@@ -3,14 +3,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Pause menu (GDD: Resume, Settings, Quit to main menu). Opens with P. Lives on the Menu_PauseMenu prefab -
-/// put the prefab in every game scene. All visuals are normal UI objects under "Content" - restyle them freely.
-///
-/// While paused: time is stopped (Time.timeScale = 0) and the mouse cursor is free.
-/// Other scripts can check PauseMenu.IsPaused or listen to OnPauseChanged (e.g. stop mouse look).
-///
-/// Test mode (default): "Quit to main menu" opens the main menu in this same scene.
-/// Turn on "Load Scene On Quit" to load the main menu scene instead.
+/// Pause menu (P): Resume, Settings, Quit to main menu. Stops time and frees the cursor.
+/// Restyle it in the Menu_PauseMenu prefab.
 /// </summary>
 public class PauseMenu : MonoBehaviour
 {
