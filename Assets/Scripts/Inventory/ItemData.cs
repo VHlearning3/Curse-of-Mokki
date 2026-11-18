@@ -1,9 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// One kind of item the player can carry (lantern, pills, a key...).
-/// Create with: right-click in Project > Create > Curse of Mokki > Item. Name assets ITEM_BaseName (e.g. ITEM_Pills).
-/// </summary>
+/// <summary>One kind of item. Create > Curse of Mokki > Item, name it ITEM_BaseName.</summary>
 [CreateAssetMenu(fileName = "ITEM_NewItem", menuName = "Curse of Mokki/Item")]
 public class ItemData : ScriptableObject
 {
@@ -22,9 +19,13 @@ public class ItemData : ScriptableObject
     [Tooltip("Show this item in the HUD.")]
     [SerializeField] bool showInHUD = true;
 
+    [Tooltip("Keep this item visible in the HUD the whole time the player carries it (e.g. keys). Off = shown only for a moment when it changes.")]
+    [SerializeField] bool alwaysShowWhileCarried = false;
+
     public string DisplayName => string.IsNullOrEmpty(displayName) ? name : displayName;
     public Sprite Icon => icon;
     public bool Stackable => stackable;
     public int MaxCount => stackable ? Mathf.Max(1, maxCount) : 1;
     public bool ShowInHUD => showInHUD;
+    public bool AlwaysShowWhileCarried => alwaysShowWhileCarried;
 }

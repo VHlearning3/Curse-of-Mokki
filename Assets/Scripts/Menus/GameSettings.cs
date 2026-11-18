@@ -1,10 +1,7 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// Player settings (GDD: music and SFX volume + on/off). Saved with PlayerPrefs.
-/// The audio manager (Otto) reads these values and listens to OnChanged; the settings menu writes them.
-/// </summary>
+/// <summary>Music and SFX settings (PlayerPrefs). The audio manager reads them.</summary>
 public static class GameSettings
 {
     const string MusicVolumeKey = "Settings.MusicVolume";

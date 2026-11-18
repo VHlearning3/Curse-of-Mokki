@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// TEST ONLY. Keys to add and remove items so the inventory and HUD can be tried without pickups.
-/// Default setup in Vili scene: 1 = lantern, 2 = pills, 3 = key. Hold Left Alt + the same key to remove one.
-/// Remove from the real player.
-/// </summary>
+/// <summary>TEST ONLY. Keys add items (Vili scene: 1 lantern, 2 pills, 3 key); Left Alt + key removes.</summary>
 [RequireComponent(typeof(PlayerInventory))]
 public class InventoryDebug : MonoBehaviour
 {

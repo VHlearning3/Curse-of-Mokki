@@ -3,16 +3,8 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 /// <summary>
-/// Madness camera effect (visual only, no audio). Reads PlayerMadness and drives its own global URP Volume:
-/// - Red edges (Vignette) start when madness passes startPercent (default 50 % = sanity below half)
-///   and grow towards the death threshold.
-/// - In the danger zone (madness >= PlayerMadness death threshold) the effect is stronger and keeps
-///   building up while a drain is active (enemy aura, hiding place). Without a drain the build-up fades,
-///   and the effect eases as sanity recovers.
-/// - Optional red tint over the whole image and an optional visual pulse in the danger zone.
-///
-/// The camera that should show the effect needs Post Processing enabled (Camera > Rendering > Post Processing).
-/// Does not touch the camera or any other script.
+/// Red madness edges (own URP Volume): from 50 % madness, stronger in the danger zone and building up while
+/// draining. The camera needs Post Processing on.
 /// </summary>
 public class MadnessVignette : MonoBehaviour
 {

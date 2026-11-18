@@ -1,11 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// TEST ONLY. Shows the madness value on screen and adds test keys for PlayerMadness.
-/// Remove from the real player when the game is built.
-/// Default keys: H = enemy hit, J = drain on/off (acts like an enemy aura), K = reset.
-/// </summary>
+/// <summary>TEST ONLY. Madness bar on screen + keys: H hit, J drain on/off, K reset.</summary>
 [RequireComponent(typeof(PlayerMadness))]
 public class MadnessDebug : MonoBehaviour
 {

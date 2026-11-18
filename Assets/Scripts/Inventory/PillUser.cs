@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// Use pills (GDD: Q, recover 30-50 sanity over 5-10 seconds). Takes one pill from PlayerInventory and
-/// calls PlayerMadness.RecoverOverTime with a random amount and duration from the ranges below.
-/// Put on the player next to PlayerInventory and PlayerMadness.
-/// The key is read directly for now; see the Q-key question to Otto in Claude log.
-/// </summary>
+/// <summary>Q takes a pill: removes one from the inventory and recovers sanity over time (GDD).</summary>
 [RequireComponent(typeof(PlayerInventory))]
 public class PillUser : MonoBehaviour
 {

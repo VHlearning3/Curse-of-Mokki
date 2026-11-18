@@ -1,12 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// Main menu (GDD: Play, Settings, Credits, Quit game). Lives on the Menu_MainMenu prefab.
-/// All visuals are normal UI objects under "Content" in the prefab - restyle them freely.
-///
-/// Test mode (default): Play just closes the menu and the game in this scene continues.
-/// Turn on "Load Scene On Play" to load the game scene instead (e.g. "MAIN SCENE").
-/// </summary>
+/// <summary>Main menu: Play, Settings, Credits, Quit game. Restyle it in the Menu_MainMenu prefab.</summary>
 public class MainMenu : MonoBehaviour
 {
     [Header("Parts (set in the prefab)")]

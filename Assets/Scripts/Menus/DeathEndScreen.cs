@@ -2,17 +2,8 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// Death / end screen (GDD: Continue, Quit). Lives on the Menu_DeathEndScreen prefab - put it in every game scene.
-/// All visuals are normal UI objects under "Content" - restyle them freely.
-///
-/// Death: opens by itself when PlayerMadness.OnDied fires (after a short delay).
-///   Continue = respawn. Until the Save Point System exists it restarts the scene.
-/// End: call ShowEnd() at the end of the final cutscene.
-///   Continue = shows the credits; Back from the credits goes to the main menu.
-/// Quit (both) = main menu.
-///
-/// Test mode (default): the main menu is the one in this scene (the scene restarts with the menu open).
-/// Turn on "Load Scene On Quit" to load the main menu scene instead.
+/// Death / end screen: Continue, Quit. Death opens on PlayerMadness.OnDied; the end via ShowEnd().
+/// Restyle it in the Menu_DeathEndScreen prefab.
 /// </summary>
 public class DeathEndScreen : MonoBehaviour
 {
