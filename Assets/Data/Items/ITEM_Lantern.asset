@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ITEM_Lantern
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   displayName: Lantern
-  icon: {fileID: 0}
+  icon: {fileID: -806351593253516041, guid: 08bf6c7ce8f46ec4399e3353d338d7ff, type: 3}
   stackable: 0
   maxCount: 1
   showInHUD: 1
+  alwaysShowWhileCarried: 1
