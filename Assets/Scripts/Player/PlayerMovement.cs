@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     { 
-        if (PauseMenu.IsPaused)
+        if (MenuUtility.AnyMenuOpen)
         {
             return;
         }
