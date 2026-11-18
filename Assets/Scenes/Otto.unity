@@ -773,6 +773,10 @@ MonoBehaviour:
   cameraTransform: {fileID: 547341079}
   isHidden: 0
   canHide: 0
+  standHeight: 0.6
+  crouchHeight: 0.1
+  hideHeight: -0.2
+  cameraSmooth: 8
 --- !u!143 &1263499250
 CharacterController:
   m_ObjectHideFlags: 0

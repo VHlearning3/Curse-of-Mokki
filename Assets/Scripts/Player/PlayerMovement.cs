@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float walkSpeed = 3f;
@@ -11,6 +12,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private bool isHidden;
     [SerializeField] private bool canHide;
+    [SerializeField] private float standHeight = 0.6f;
+    [SerializeField] private float crouchHeight = 0.1f;
+    [SerializeField] private float hideHeight = -0.2f;
+    [SerializeField] private float cameraSmooth = 8f;
+    private float cameraHeight;
     public bool IsHidden => isHidden;
 
     private CharacterController controller;
@@ -19,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
+        cameraHeight = standHeight;
         Cursor.lockState =
             CursorLockMode.Locked;
         controller = GetComponent<CharacterController>();
@@ -44,6 +51,24 @@ public class PlayerMovement : MonoBehaviour
         {
             isHidden = !isHidden;
         }
+         
+        float targetHeight;
+        if (isHidden)
+        {
+            targetHeight = hideHeight;
+        }
+        else if (Keyboard.current.leftCtrlKey.isPressed)
+        {
+            targetHeight = crouchHeight;
+        }
+        else
+        {
+            targetHeight = standHeight;
+        }
+        cameraHeight = Mathf.Lerp(cameraHeight, targetHeight, cameraSmooth * Time.deltaTime);
+        cameraTransform.localPosition = new Vector3(0f, cameraHeight, 0f);
+
+
         if (isHidden)
         {
             return;
