@@ -18,6 +18,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float cameraSmooth = 8f;
     [SerializeField] private float normalFov = 60f;
     [SerializeField] private float sprintFov = 70f;
+    [SerializeField] private float bobAmount = 0.05f;
+    [SerializeField] private float bobFrequency = 3f;
+    private float bobTimer;
     private Camera playerCamera;
     private float cameraHeight;
     public bool IsHidden => isHidden;
@@ -71,7 +74,17 @@ public class PlayerMovement : MonoBehaviour
             targetHeight = standHeight;
         }
         cameraHeight = Mathf.Lerp(cameraHeight, targetHeight, cameraSmooth * Time.deltaTime);
-        cameraTransform.localPosition = new Vector3(0f, cameraHeight, 0f);
+        Vector3 flatVelocity = controller.velocity;
+        flatVelocity.y = 0f;
+        float moveSpeed = flatVelocity.magnitude;
+        if (isHidden)
+        {
+            moveSpeed = 0f;
+        }
+        bobTimer += moveSpeed * bobFrequency * Time.deltaTime;
+        float bobOffset = Mathf.Sin(bobTimer) * bobAmount * (moveSpeed / walkSpeed);
+        cameraTransform.localPosition = new
+            Vector3(0f, cameraHeight + bobOffset, 0f);
         float targetFov;
         if (Keyboard.current.leftShiftKey.isPressed && !isHidden && !Keyboard.current.leftCtrlKey.isPressed)
         {
