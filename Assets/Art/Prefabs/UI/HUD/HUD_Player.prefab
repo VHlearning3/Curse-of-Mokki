@@ -617,6 +617,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Example slot (removed in game)
       objectReference: {fileID: 0}
+    - target: {fileID: 2549389007332768880, guid: b5fb9657986467e4b9ceaa44f68f759f, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2549389007332768880, guid: b5fb9657986467e4b9ceaa44f68f759f, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2549389007332768880, guid: b5fb9657986467e4b9ceaa44f68f759f, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3361916048631930760, guid: b5fb9657986467e4b9ceaa44f68f759f, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
