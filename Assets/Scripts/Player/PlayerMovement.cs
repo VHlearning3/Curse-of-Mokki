@@ -34,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Crouch")]
     [SerializeField] private float standColliderHeight = 2f;
     [SerializeField] private float crouchColliderHeight = 1.2f;
+    [SerializeField] private bool isCrouching;
     
     
     public bool IsHidden => isHidden;
@@ -62,9 +63,10 @@ public class PlayerMovement : MonoBehaviour
 
         HandleLook();
         HandleHiding();
+        HandleCrouch();
         HandleCameraHeight();
         HandleFieldOfView();
-        HandleCrouch();
+        
 
         if (isHidden)
         {
@@ -72,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         HandleMovement();
+        
     }
 
     void HandleLook()
@@ -100,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
         {
             targetHeight = hideHeight;
         }
-        else if (Keyboard.current.leftCtrlKey.isPressed)
+        else if (isCrouching)
         {
             targetHeight = crouchHeight;
         }
@@ -126,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
     void HandleFieldOfView()
     {
         float targetFov;
-        if (Keyboard.current.leftShiftKey.isPressed && !isHidden && !Keyboard.current.leftCtrlKey.isPressed)
+        if (Keyboard.current.leftShiftKey.isPressed && !isHidden && !isCrouching)
         {
             targetFov = sprintFov;
         }
@@ -140,7 +143,7 @@ public class PlayerMovement : MonoBehaviour
     void HandleMovement()
     {
         float currentSpeed;
-        if (Keyboard.current.leftCtrlKey.isPressed)
+        if (isCrouching)
         {
             currentSpeed = sneakSpeed;
         }
@@ -185,8 +188,17 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleCrouch()
     {
+        bool ceilingAbove = Physics.Raycast(transform.position, Vector3.up, standColliderHeight / 2f + 0.1f, ~0, QueryTriggerInteraction.Ignore);
+        if (Keyboard.current.leftCtrlKey.isPressed)
+        {
+            isCrouching = true;
+        }
+        else if (!ceilingAbove)
+        {
+           isCrouching = false;
+        }
         float targetColliderHeight;
-        if (Keyboard.current.leftCtrlKey.isPressed) 
+        if (isCrouching) 
         {
             targetColliderHeight = crouchColliderHeight;
         }
