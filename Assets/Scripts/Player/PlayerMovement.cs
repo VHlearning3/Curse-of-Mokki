@@ -31,6 +31,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool isHidden;
     [SerializeField] private int hidingSpotsNearby ;
 
+    [Header("Crouch")]
+    [SerializeField] private float standColliderHeight = 2f;
+    [SerializeField] private float crouchColliderHeight = 1.2f;
+    
+    
     public bool IsHidden => isHidden;
 
     private CharacterController controller;
@@ -59,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
         HandleHiding();
         HandleCameraHeight();
         HandleFieldOfView();
+        HandleCrouch();
 
         if (isHidden)
         {
@@ -177,6 +183,24 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
+    void HandleCrouch()
+    {
+        float targetColliderHeight;
+        if (Keyboard.current.leftCtrlKey.isPressed) 
+        {
+            targetColliderHeight = crouchColliderHeight;
+        }
+        else
+        {
+            targetColliderHeight = standColliderHeight;
+        }
+        controller.height = Mathf.Lerp(controller.height, targetColliderHeight, cameraSmooth * Time.deltaTime);
+        controller.center = new Vector3 (0f, (controller.height - standColliderHeight) / 2f, 0f);
+    }
+    
+
+        
+    
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("HidingSpot"))
