@@ -35,6 +35,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float standColliderHeight = 2f;
     [SerializeField] private float crouchColliderHeight = 1.2f;
     [SerializeField] private bool isCrouching;
+    [Header("Footsteps")]
+    [SerializeField] private float stepDistance = 2f;
+    [SerializeField] private float sneakStepVolume = 0.4f;
     
     
     public bool IsHidden => isHidden;
@@ -44,6 +47,7 @@ public class PlayerMovement : MonoBehaviour
     private float fallSpeed;
     private float lookAngle;
     private float cameraHeight;
+    private float stepProgress;
     private float bobTimer;
 
     void Awake()
@@ -74,6 +78,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         HandleMovement();
+        HandleFootsteps();
         
     }
 
@@ -184,6 +189,28 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocity = direction * currentSpeed;
         velocity.y = fallSpeed;
         controller.Move(velocity * Time.deltaTime);
+    }
+    void HandleFootsteps()
+    {
+        Vector3 flatVelocity = controller.velocity;
+        flatVelocity.y = 0f;
+        float moveSpeed = flatVelocity.magnitude;
+        stepProgress += moveSpeed * Time.deltaTime;
+        if (stepProgress > stepDistance)
+        {
+            stepProgress = 0f;
+            float stepVolume;
+            if (isCrouching)
+            {
+                stepVolume = sneakStepVolume;
+            }
+            else
+            {
+                stepVolume = 1f;
+            }
+            
+                AudioManager.Instance.PlaySFX("SFX_WalkFloor", stepVolume);
+        }
     }
 
     void HandleCrouch()
