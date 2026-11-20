@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   displayName: Key
   icon: {fileID: 1905834772665473681, guid: 1e078605d82faca429afb9e2193f57c3, type: 3}
-  stackable: 1
+  stackable: 0
   maxCount: 1
   showInHUD: 1
   alwaysShowWhileCarried: 1
