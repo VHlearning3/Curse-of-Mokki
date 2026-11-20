@@ -64,6 +64,22 @@ public class PlayerMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    void Start()
+    {
+        foreach (SanityLostZone zone in FindObjectsByType<SanityLostZone>(FindObjectsSortMode.None))
+        {
+            zone.OnTriggered += OnSanityLostZoneTriggered;
+        }
+    }
+
+    void OnSanityLostZoneTriggered(SanityLostZone zone)
+    {
+        if (zone.FocusPoint != null)
+        {
+            LookAt(zone.FocusPoint.position, zone.Duration);
+        }
+    }
+
     void Update()
     { 
         if (MenuUtility.AnyMenuOpen)
