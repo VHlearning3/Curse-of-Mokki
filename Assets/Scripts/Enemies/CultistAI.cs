@@ -50,14 +50,16 @@ public class CultistAI : MonoBehaviour
     [SerializeField, Min(0f)] float chaseSpeed = 3.5f;
     [Tooltip("Distance to start a hit (m).")]
     [SerializeField, Min(0.1f)] float attackRange = 1.6f;
-    [Tooltip("Seconds between stopping and the hit landing (the player can still run).")]
-    [SerializeField, Min(0f)] float attackWindup = 0.6f;
+    [Tooltip("Seconds between starting the attack and the hit landing (the player can still run). 0.45 = arms fully out in the attack animation.")]
+    [SerializeField, Min(0f)] float attackWindup = 0.45f;
     [Tooltip("Madness added by a hit. 0 = the PlayerMadness default hit amount.")]
     [SerializeField, Min(0f)] float hitMadness = 0f;
     [Tooltip("GDD: the cultist disappears if its hit doesn't kill.")]
     [SerializeField] bool disappearAfterHit = true;
-    [Tooltip("Seconds after the hit before disappearing.")]
-    [SerializeField, Min(0f)] float disappearDelay = 0.5f;
+    [Tooltip("Seconds after the hit before disappearing (lets the attack animation finish).")]
+    [SerializeField, Min(0f)] float disappearDelay = 0.8f;
+    [Tooltip("Seconds the attack animation keeps playing after the hit before idle/walk can take over.")]
+    [SerializeField, Min(0f)] float attackFinishSeconds = 0.8f;
 
     [Header("Ground")]
     [Tooltip("Keep the feet on the ground (raycast down).")]
@@ -97,6 +99,7 @@ public class CultistAI : MonoBehaviour
     bool searchArrived;
     Vector3 lastSeen;
     int currentAnim;
+    float animHold;
 
     void Start()
     {
@@ -123,6 +126,7 @@ public class CultistAI : MonoBehaviour
     void Step(float dt)
     {
         if (player == null || state == State.Gone && !gameObject.activeSelf) return;
+        if (animHold > 0f) animHold -= dt;
 
         if (state == State.Gone)
         {
@@ -207,11 +211,11 @@ public class CultistAI : MonoBehaviour
     {
         bool killed = hitMadness > 0f ? madness.TakeHit(hitMadness) : madness.TakeHit();
         OnHitPlayer?.Invoke(killed);
+        animHold = attackFinishSeconds; // let the attack animation play out
         if (!killed && disappearAfterHit)
         {
             state = State.Gone;
             timer = disappearDelay;
-            PlayAnim(idleState, 1f);
         }
         else EnterWait(float.PositiveInfinity);
     }
@@ -309,6 +313,7 @@ public class CultistAI : MonoBehaviour
     bool PlayAnim(string stateName, float speed)
     {
         if (animator == null || string.IsNullOrEmpty(stateName) || animator.runtimeAnimatorController == null) return false;
+        if (animHold > 0f && stateName != attackState) return true; // attack animation still finishing
         int hash = Animator.StringToHash(stateName);
         if (!animator.HasState(0, hash)) return false;
         animator.speed = speed;
