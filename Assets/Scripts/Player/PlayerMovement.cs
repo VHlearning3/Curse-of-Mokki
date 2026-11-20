@@ -38,9 +38,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("Footsteps")]
     [SerializeField] private float stepDistance = 2f;
     [SerializeField] private float sneakStepVolume = 0.4f;
-    
-    
+
+    [Header("Forced look")]
+    [SerializeField] private float lookAtSmooth = 4f;
+    [SerializeField] private bool freezeMovementWhileLooking = true;
+
     public bool IsHidden => isHidden;
+    public bool IsLookingAt => lookAtTimer > 0f;
 
     private CharacterController controller;
     private Camera playerCamera;
@@ -49,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
     private float cameraHeight;
     private float stepProgress;
     private float bobTimer;
+    private float lookAtTimer;
+    private Vector3 lookAtPoint;
 
     void Awake()
     { 
@@ -58,6 +64,22 @@ public class PlayerMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    void Start()
+    {
+        foreach (SanityLostZone zone in FindObjectsByType<SanityLostZone>(FindObjectsSortMode.None))
+        {
+            zone.OnTriggered += OnSanityLostZoneTriggered;
+        }
+    }
+
+    void OnSanityLostZoneTriggered(SanityLostZone zone)
+    {
+        if (zone.FocusPoint != null)
+        {
+            LookAt(zone.FocusPoint.position, zone.Duration);
+        }
+    }
+
     void Update()
     { 
         if (MenuUtility.AnyMenuOpen)
@@ -65,7 +87,14 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        HandleLook();
+        if (lookAtTimer > 0f)
+        {
+            HandleForcedLook();
+        }
+        else
+        {
+            HandleLook();
+        }
         HandleHiding();
         HandleCrouch();
         HandleCameraHeight();
@@ -90,6 +119,30 @@ public class PlayerMovement : MonoBehaviour
         float mouseY = Mouse.current.delta.ReadValue().y;
         lookAngle -= mouseY * mouseSensitivity;
         lookAngle = Mathf.Clamp(lookAngle, -80f, 80f);
+        cameraTransform.localRotation = Quaternion.Euler(lookAngle, 0f, 0f);
+    }
+
+    public void LookAt(Vector3 point, float seconds)
+    {
+        lookAtPoint = point;
+        lookAtTimer = seconds;
+    }
+
+    void HandleForcedLook()
+    {
+        lookAtTimer -= Time.deltaTime;
+
+        Vector3 toPoint = lookAtPoint - cameraTransform.position;
+        Vector3 flatToPoint = new Vector3(toPoint.x, 0f, toPoint.z);
+
+        float targetYaw = Mathf.Atan2(toPoint.x, toPoint.z) * Mathf.Rad2Deg;
+        float targetPitch = -Mathf.Atan2(toPoint.y, flatToPoint.magnitude) * Mathf.Rad2Deg;
+        targetPitch = Mathf.Clamp(targetPitch, -80f, 80f);
+
+        float yaw = Mathf.LerpAngle(transform.eulerAngles.y, targetYaw, lookAtSmooth * Time.deltaTime);
+        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+
+        lookAngle = Mathf.Lerp(lookAngle, targetPitch, lookAtSmooth * Time.deltaTime);
         cameraTransform.localRotation = Quaternion.Euler(lookAngle, 0f, 0f);
     }
 
@@ -180,6 +233,11 @@ public class PlayerMovement : MonoBehaviour
         }
         direction = direction.normalized;
 
+        if (lookAtTimer > 0f && freezeMovementWhileLooking)
+        {
+            direction = Vector3.zero;
+        }
+
         if (controller.isGrounded)
         {
             fallSpeed = -2f;
@@ -208,9 +266,31 @@ public class PlayerMovement : MonoBehaviour
             {
                 stepVolume = 1f;
             }
-            
-                AudioManager.Instance.PlaySFX("SFX_WalkFloor", stepVolume);
+
+            string surface = GetGroundSurface();
+            string stepSound = "SFX_Walk" + surface;
+            bool isRunning = moveSpeed > (walkSpeed + sprintSpeed) / 2f;
+            if (isRunning && AudioManager.Instance.HasClip("SFX_Run" + surface))
+            {
+                stepSound = "SFX_Run" + surface;
+            }
+            AudioManager.Instance.PlaySFX(stepSound, stepVolume);
         }
+    }
+
+    string GetGroundSurface()
+    {
+        RaycastHit hit;
+        bool groundBelow = Physics.Raycast(transform.position, Vector3.down, out hit, standColliderHeight / 2f + 0.5f, ~0, QueryTriggerInteraction.Ignore);
+        if (groundBelow && hit.collider.CompareTag("Floor"))
+        {
+            return "Floor";
+        }
+        if (groundBelow && hit.collider.CompareTag("Cave"))
+        {
+            return "Cave";
+        }
+        return "Snow";
     }
 
     void HandleCrouch()
