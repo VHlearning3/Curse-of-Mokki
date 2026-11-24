@@ -16,6 +16,9 @@ public class ItemData : ScriptableObject
     [Tooltip("Most the player can carry when stackable.")]
     [SerializeField, Min(1)] int maxCount = 1;
 
+    [Tooltip("Highest value Max Count may be set to in the Inspector (0 = no limit). Stones: 3, so Max Count stays 1–3.")]
+    [SerializeField, Min(0)] int maxCountLimit = 0;
+
     [Tooltip("Show this item in the HUD.")]
     [SerializeField] bool showInHUD = true;
 
@@ -28,4 +31,9 @@ public class ItemData : ScriptableObject
     public int MaxCount => stackable ? Mathf.Max(1, maxCount) : 1;
     public bool ShowInHUD => showInHUD;
     public bool AlwaysShowWhileCarried => alwaysShowWhileCarried;
+
+    void OnValidate()
+    {
+        if (maxCountLimit > 0) maxCount = Mathf.Clamp(maxCount, 1, maxCountLimit);
+    }
 }

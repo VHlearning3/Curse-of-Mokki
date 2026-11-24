@@ -809,8 +809,8 @@ MonoBehaviour:
   crouchHeight: 0.1
   hideHeight: -0.2
   cameraSmooth: 8
-  normalFov: 60
-  sprintFov: 70
+  normalFov: 50
+  sprintFov: 60
   bobAmount: 0.05
   bobFrequency: 3
   isHidden: 0
@@ -820,6 +820,9 @@ MonoBehaviour:
   isCrouching: 0
   stepDistance: 2
   sneakStepVolume: 0.4
+  stepPitchVariation: 0.12
+  stepVolumeVariation: 0.25
+  stepRhythmVariation: 0.15
   lookAtSmooth: 4
   freezeMovementWhileLooking: 1
 --- !u!143 &879293899
@@ -2317,7 +2320,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 50
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
