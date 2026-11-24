@@ -58,7 +58,13 @@ public class AudioManager : MonoBehaviour
     // Sources in the middle of a fade; the fade drives their volume.
     private readonly HashSet<AudioSource> fading = new HashSet<AudioSource>();
 
-    private AudioSource sfxSource;      // 2D one-shots (UI, the player's own sounds)
+    // 2D one-shots (UI, the player's own sounds). Several sources, used in turn,
+    // so each sound keeps its own random pitch while the previous one is still ringing.
+    private const int SfxSourceCount = 6;
+    private readonly List<AudioSource> sfxSources = new List<AudioSource>();
+    private int nextSfxSource;
+    // Clip name -> the alt version played last time, so the same one is not picked twice in a row.
+    private readonly Dictionary<string, AudioClip> lastPlayed = new Dictionary<string, AudioClip>();
     private AudioSource musicSource;    // looping music
     private AudioSource ambienceSource; // looping ambience, follows the SFX volume
     private Coroutine musicFade;
@@ -105,7 +111,10 @@ public class AudioManager : MonoBehaviour
         transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
-        sfxSource = CreateSource("SFX", false);
+        for (int i = 0; i < SfxSourceCount; i++)
+        {
+            sfxSources.Add(CreateSource("SFX " + i, false));
+        }
         musicSource = CreateSource("Music", true);
         ambienceSource = CreateSource("Ambience", true);
 
@@ -180,7 +189,17 @@ public class AudioManager : MonoBehaviour
     {
         if (library.TryGetValue(clipName, out var list) && list.Count > 0)
         {
-            return list[UnityEngine.Random.Range(0, list.Count)];
+            AudioClip clip = list[UnityEngine.Random.Range(0, list.Count)];
+            if (list.Count > 1)
+            {
+                lastPlayed.TryGetValue(clipName, out var last);
+                while (clip == last)
+                {
+                    clip = list[UnityEngine.Random.Range(0, list.Count)];
+                }
+            }
+            lastPlayed[clipName] = clip;
+            return clip;
         }
 
         // Warn once per name, so a missing footstep doesn't flood the Console.
@@ -196,17 +215,27 @@ public class AudioManager : MonoBehaviour
 
     // ---------- Sound effects ----------
 
-    /// <summary>Plays a sound that is not placed in the world (UI, the player's own sounds).</summary>
-    public void PlaySFX(string clipName, float volumeScale = 1f)
+    /// <summary>
+    /// Plays a sound that is not placed in the world (UI, the player's own sounds).
+    /// pitchVariation: how much the pitch may go up or down this time (0.1 = 10 %). Leave it out to use the manager's default.
+    /// </summary>
+    public void PlaySFX(string clipName, float volumeScale = 1f, float pitchVariation = -1f)
     {
         var clip = GetClip(clipName);
         if (clip == null)
         {
             return;
         }
+        if (pitchVariation < 0f)
+        {
+            pitchVariation = sfxPitchVariation;
+        }
 
-        sfxSource.pitch = 1f + UnityEngine.Random.Range(-sfxPitchVariation, sfxPitchVariation);
-        sfxSource.PlayOneShot(clip, volumeScale);
+        AudioSource source = sfxSources[nextSfxSource];
+        nextSfxSource = (nextSfxSource + 1) % sfxSources.Count;
+
+        source.pitch = 1f + UnityEngine.Random.Range(-pitchVariation, pitchVariation);
+        source.PlayOneShot(clip, volumeScale);
     }
 
     /// <summary>Plays a sound at a point in the world, so it is heard from that direction.</summary>
@@ -311,12 +340,15 @@ public class AudioManager : MonoBehaviour
     // Runs at start and every time the settings menu changes something.
     private void ApplyVolumes()
     {
-        if (sfxSource == null)
+        if (sfxSources.Count == 0)
         {
             return;
         }
 
-        sfxSource.volume = GameSettings.EffectiveSfxVolume;
+        foreach (AudioSource source in sfxSources)
+        {
+            source.volume = GameSettings.EffectiveSfxVolume;
+        }
         // Don't fight a running fade; it reads the new value itself.
         if (!fading.Contains(musicSource))
         {

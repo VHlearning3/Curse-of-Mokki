@@ -38,6 +38,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Footsteps")]
     [SerializeField] private float stepDistance = 2f;
     [SerializeField] private float sneakStepVolume = 0.4f;
+    [SerializeField] private float stepPitchVariation = 0.12f;
+    [SerializeField] private float stepVolumeVariation = 0.25f;
+    [SerializeField] private float stepRhythmVariation = 0.15f;
 
     [Header("Forced look")]
     [SerializeField] private float lookAtSmooth = 4f;
@@ -256,7 +259,7 @@ public class PlayerMovement : MonoBehaviour
         stepProgress += moveSpeed * Time.deltaTime;
         if (stepProgress > stepDistance)
         {
-            stepProgress = 0f;
+            stepProgress = Random.Range(0f, stepRhythmVariation) * stepDistance;
             float stepVolume;
             if (isCrouching)
             {
@@ -274,7 +277,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 stepSound = "SFX_Run" + surface;
             }
-            AudioManager.Instance.PlaySFX(stepSound, stepVolume);
+            stepVolume *= Random.Range(1f - stepVolumeVariation, 1f);
+            AudioManager.Instance.PlaySFX(stepSound, stepVolume, stepPitchVariation);
         }
     }
 
