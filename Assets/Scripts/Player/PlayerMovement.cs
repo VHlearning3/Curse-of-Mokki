@@ -20,8 +20,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float cameraSmooth = 8f;
 
     [Header("Field of view")]
-    [SerializeField] private float normalFov = 60f;
-    [SerializeField] private float sprintFov = 70f;
+    [SerializeField] private float normalFov = 50f;
+    [SerializeField] private float sprintFov = 60f;
 
     [Header("Head bob")]
     [SerializeField] private float bobAmount = 0.05f;
@@ -300,7 +300,7 @@ public class PlayerMovement : MonoBehaviour
     void HandleCrouch()
     {
         bool ceilingAbove = Physics.Raycast(transform.position, Vector3.up, standColliderHeight / 2f + 0.1f, ~0, QueryTriggerInteraction.Ignore);
-        if (Keyboard.current.leftCtrlKey.isPressed)
+        if (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.cKey.isPressed)
         {
             isCrouching = true;
         }
