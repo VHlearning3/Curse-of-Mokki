@@ -85,3 +85,6 @@ crashlytics-build.properties
 # Unity crash-recovery copies of scenes (made after an Editor crash): never commit them
 /[Aa]ssets/_Recovery/
 /[Aa]ssets/_Recovery.meta
+
+# NotebookLM export (Tools > NotebookLM Script Exporter) - generated on each PC, not shared
+/[Nn]otebook[Ee]xport/
