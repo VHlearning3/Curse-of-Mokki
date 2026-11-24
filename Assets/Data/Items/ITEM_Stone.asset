@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ITEM_Stone
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   displayName: Stone
-  icon: {fileID: 0}
+  icon: {fileID: 6789560960279303012, guid: abf830aedc058134fa0b91a6f11b3278, type: 3}
   stackable: 1
   maxCount: 3
   maxCountLimit: 3
