@@ -3,61 +3,64 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // ----- Movement -----
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 3f;
     [SerializeField] private float sneakSpeed = 1.5f;
     [SerializeField] private float sprintSpeed = 6f;
     [SerializeField] private float gravity = -9.81f;
+    private CharacterController controller;
+    private float fallSpeed;
 
+    [Header("Crouch")]
+    [SerializeField] private float standColliderHeight = 2f;
+    [SerializeField] private float crouchColliderHeight = 1.2f;
+    [SerializeField] private bool isCrouching;
+
+    // ----- Camera -----
     [Header("Mouse look")]
     [SerializeField] private float mouseSensitivity = 0.1f;
     [SerializeField] private Transform cameraTransform;
+    private float lookAngle;
 
     [Header("Camera height")]
     [SerializeField] private float standHeight = 0.6f;
     [SerializeField] private float crouchHeight = 0.1f;
     [SerializeField] private float hideHeight = -0.2f;
     [SerializeField] private float cameraSmooth = 8f;
+    private float cameraHeight;
 
     [Header("Field of view")]
     [SerializeField] private float normalFov = 50f;
     [SerializeField] private float sprintFov = 60f;
+    private Camera playerCamera;
 
     [Header("Head bob")]
     [SerializeField] private float bobAmount = 0.05f;
     [SerializeField] private float bobFrequency = 3f;
+    private float bobTimer;
 
+    [Header("Forced look")]
+    [SerializeField] private float lookAtSmooth = 4f;
+    [SerializeField] private bool freezeMovementWhileLooking = true;
+    private float lookAtTimer;
+    private Vector3 lookAtPoint;
+    public bool IsLookingAt => lookAtTimer > 0f;
+
+    // ----- Hiding -----
     [Header("Hiding")]
     [SerializeField] private bool isHidden;
-    [SerializeField] private int hidingSpotsNearby ;
+    [SerializeField] private int hidingSpotsNearby;
+    public bool IsHidden => isHidden;
 
-    [Header("Crouch")]
-    [SerializeField] private float standColliderHeight = 2f;
-    [SerializeField] private float crouchColliderHeight = 1.2f;
-    [SerializeField] private bool isCrouching;
+    // ----- Sounds -----
     [Header("Footsteps")]
     [SerializeField] private float stepDistance = 2f;
     [SerializeField] private float sneakStepVolume = 0.4f;
     [SerializeField] private float stepPitchVariation = 0.12f;
     [SerializeField] private float stepVolumeVariation = 0.25f;
     [SerializeField] private float stepRhythmVariation = 0.15f;
-
-    [Header("Forced look")]
-    [SerializeField] private float lookAtSmooth = 4f;
-    [SerializeField] private bool freezeMovementWhileLooking = true;
-
-    public bool IsHidden => isHidden;
-    public bool IsLookingAt => lookAtTimer > 0f;
-
-    private CharacterController controller;
-    private Camera playerCamera;
-    private float fallSpeed;
-    private float lookAngle;
-    private float cameraHeight;
     private float stepProgress;
-    private float bobTimer;
-    private float lookAtTimer;
-    private Vector3 lookAtPoint;
 
     void Awake()
     { 
@@ -90,25 +93,11 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (lookAtTimer > 0f)
-        {
-            HandleForcedLook();
-        }
-        else
-        {
-            HandleLook();
-        }
+        HandleLook();
         HandleHiding();
         HandleCrouch();
         HandleCameraHeight();
         HandleFieldOfView();
-        
-
-        if (isHidden)
-        {
-            return;
-        }
-
         HandleMovement();
         HandleFootsteps();
         
@@ -116,6 +105,11 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleLook()
     {
+        if (lookAtTimer > 0f)
+        {
+            HandleForcedLook();
+            return;
+        } 
         float mouseX = Mouse.current.delta.ReadValue().x;
         transform.Rotate(0f, mouseX * mouseSensitivity, 0f);
 
@@ -203,6 +197,11 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleMovement()
     {
+        
+        if (isHidden)
+        {
+            return;
+        }
         float currentSpeed;
         if (isCrouching)
         {
@@ -253,10 +252,15 @@ public class PlayerMovement : MonoBehaviour
     }
     void HandleFootsteps()
     {
+        if (isHidden)
+        {
+            return;
+        }
         Vector3 flatVelocity = controller.velocity;
         flatVelocity.y = 0f;
         float moveSpeed = flatVelocity.magnitude;
         stepProgress += moveSpeed * Time.deltaTime;
+
         if (stepProgress > stepDistance)
         {
             stepProgress = Random.Range(0f, stepRhythmVariation) * stepDistance;
