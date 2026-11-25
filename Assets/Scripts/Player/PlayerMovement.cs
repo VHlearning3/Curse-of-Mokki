@@ -295,6 +295,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 stepSound = "SFX_Run" + surface;
             }
+            if (isCrouching && AudioManager.Instance.HasClip("SFX_Sneak" + surface))
+            {
+                stepSound = "SFX_Sneak" + surface;
+            }
             stepVolume *= Random.Range(1f - stepVolumeVariation, 1f);
             AudioManager.Instance.PlaySFX(stepSound, stepVolume, stepPitchVariation);
         }
