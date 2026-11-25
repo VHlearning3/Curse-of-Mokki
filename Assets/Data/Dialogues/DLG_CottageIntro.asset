@@ -13,8 +13,49 @@ MonoBehaviour:
   m_Name: DLG_CottageIntro
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - speakerName: NPC_Friend
-    text: Nice to be here huh
+  - speakerName: Friend
+    text: "\u201CI\u2019m so glad you came around! Man ... all these years ... it
+      couldn\u2019t have been easy for you."
+    voiceClipName: 
+    voiceClip: {fileID: 0}
+    duration: 0
+  - speakerName: Friend
+    text: "\" imagine you still hate me a little for the ... thing.\u201D"
+    voiceClipName: 
+    voiceClip: {fileID: 0}
+    duration: 0
+  - speakerName: Player
+    text: "\u201CNo, not even a little. It gets tiring holding a grudge. \nI\u2019ve
+      wasted so much time wallowing in it, and after all, it was just an accident.\u201D"
+    voiceClipName: 
+    voiceClip: {fileID: 0}
+    duration: 0
+  - speakerName: Friend
+    text: "\u201CThat\u2019s right. It was an accident, nothing more. But you really
+      do deserve a medal for being so fair. Man, this place was a great choice!"
+    voiceClipName: 
+    voiceClip: {fileID: 0}
+    duration: 0
+  - speakerName: Friend
+    text: "I get why you wanted no internet connection. No phones buzzing around,
+      stealing our attention. This way we have nothing to do but to get it all out
+      and clear it up!\u201D"
+    voiceClipName: 
+    voiceClip: {fileID: 0}
+    duration: 0
+  - speakerName: Player
+    text: "\u201CYep...\u201D (drinks beer)"
+    voiceClipName: 
+    voiceClip: {fileID: 0}
+    duration: 0
+  - speakerName: Friend
+    text: "\u201CWell, I think I\u2019m off to bed for today.\u201D"
+    voiceClipName: 
+    voiceClip: {fileID: 0}
+    duration: 0
+  - speakerName: Player
+    text: "\u201CMe too. I\u2019ll just throw some wood in the fireplace, so it won\u2019t
+      get so cold to\r\nsleep.\u201D"
     voiceClipName: 
     voiceClip: {fileID: 0}
     duration: 0
