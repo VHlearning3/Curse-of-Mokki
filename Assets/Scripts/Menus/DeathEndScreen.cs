@@ -3,6 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// Death / end screen: Continue, Quit. Death opens on PlayerMadness.OnDied; the end via ShowEnd().
+/// Death Continue = respawn at the last SavePoint (SavePointSystem), or restart the scene if there is none.
 /// Restyle it in the Menu_DeathEndScreen prefab.
 /// </summary>
 public class DeathEndScreen : MonoBehaviour
@@ -111,7 +112,13 @@ public class DeathEndScreen : MonoBehaviour
         if (CurrentMode == Mode.Death)
         {
             Hide();
-            MenuUtility.ReloadCurrentScene(skipMainMenu: true); // TODO: respawn at the last save point when it exists
+            // Save Point System: respawn at the last activated SavePoint; without one, restart the scene.
+            if (SavePointSystem.HasActive && SavePointSystem.Respawn())
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else MenuUtility.ReloadCurrentScene(skipMainMenu: true);
         }
         else if (CurrentMode == Mode.End)
         {

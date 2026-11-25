@@ -6,7 +6,7 @@ using UnityEngine;
 /// kills at the death threshold, otherwise adds madness). Disappears if the hit doesn't kill.
 /// Put on the cultist root (with the Animator). Add EnemyMadnessAura for the aura.
 /// </summary>
-public class CultistAI : MonoBehaviour
+public class CultistAI : MonoBehaviour, IRespawnResettable
 {
     public enum State { Patrol, Wait, Chase, Search, Attack, Gone }
 
@@ -100,6 +100,38 @@ public class CultistAI : MonoBehaviour
     Vector3 lastSeen;
     int currentAnim;
     float animHold;
+
+    Vector3 startPosition;
+    Quaternion startRotation;
+
+    void Awake()
+    {
+        startPosition = transform.position;
+        startRotation = transform.rotation;
+        SavePointSystem.Register(this);
+    }
+
+    void OnDestroy() => SavePointSystem.Unregister(this);
+
+    /// <summary>Save point respawn: back to where it stood at scene start, visible again, patrolling.</summary>
+    public void ResetForRespawn()
+    {
+        if (!gameObject.activeSelf) gameObject.SetActive(true);
+        transform.SetPositionAndRotation(startPosition, startRotation);
+        timer = 0f;
+        lostTimer = 0f;
+        animHold = 0f;
+        searchArrived = false;
+        canSeePlayer = false;
+        direction = 1;
+        currentAnim = 0;
+        if (path != null && path.Count > 0)
+        {
+            pointIndex = path.Closest(transform.position);
+            state = State.Patrol;
+        }
+        else EnterWait(float.PositiveInfinity);
+    }
 
     void Start()
     {

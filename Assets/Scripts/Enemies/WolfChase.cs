@@ -8,7 +8,7 @@ using UnityEngine;
 /// the player (too slow = dead). When the player reaches the end circle the wolf leaves.
 /// Put on the wolf root. Add EnemyMadnessAura for the sanity losing aura.
 /// </summary>
-public class WolfChase : MonoBehaviour
+public class WolfChase : MonoBehaviour, IRespawnResettable
 {
     public enum State { Waiting, Chasing, Lunging, Done }
 
@@ -77,6 +77,28 @@ public class WolfChase : MonoBehaviour
     float timer;
     int currentAnim;
     bool chaseSoundPlayed;
+
+    void Awake() => SavePointSystem.Register(this);
+
+    void OnDestroy() => SavePointSystem.Unregister(this);
+
+    /// <summary>Save point respawn: back to the first route point, waiting for the player again.</summary>
+    public void ResetForRespawn()
+    {
+        if (!gameObject.activeSelf) gameObject.SetActive(true);
+        state = State.Waiting;
+        targetPoint = 1;
+        timer = 0f;
+        chaseSoundPlayed = false;
+        currentAnim = 0;
+        if (path != null && path.Count > 0)
+        {
+            transform.position = path.GetPoint(0);
+            if (snapToGround) SnapToGround();
+            if (path.Count > 1) Face(path.GetPoint(1) - transform.position, 1000f);
+        }
+        PlayAnim(idleState);
+    }
 
     void Start()
     {
