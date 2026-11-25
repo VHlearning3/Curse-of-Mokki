@@ -985,6 +985,8 @@ GameObject:
   - component: {fileID: 1263499251}
   - component: {fileID: 1263499250}
   - component: {fileID: 1263499249}
+  - component: {fileID: 1263499255}
+  - component: {fileID: 1263499254}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1008,6 +1010,9 @@ MonoBehaviour:
   sneakSpeed: 1.5
   sprintSpeed: 6
   gravity: -9.81
+  standColliderHeight: 2
+  crouchColliderHeight: 1.2
+  isCrouching: 0
   mouseSensitivity: 0.1
   cameraTransform: {fileID: 547341079}
   standHeight: 0.6
@@ -1018,18 +1023,15 @@ MonoBehaviour:
   sprintFov: 60
   bobAmount: 0.05
   bobFrequency: 3
+  lookAtSmooth: 4
+  freezeMovementWhileLooking: 1
   isHidden: 0
   hidingSpotsNearby: 0
-  standColliderHeight: 2
-  crouchColliderHeight: 1.2
-  isCrouching: 0
   stepDistance: 2
   sneakStepVolume: 0.4
   stepPitchVariation: 0.12
   stepVolumeVariation: 0.25
   stepRhythmVariation: 0.15
-  lookAtSmooth: 4
-  freezeMovementWhileLooking: 1
 --- !u!143 &1263499250
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1129,6 +1131,41 @@ Transform:
   - {fileID: 547341079}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1263499254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263499248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81a2a6fbe7e25904eb37e8ab48be6363, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MadnessDebug
+  hitKey: 22
+  toggleDrainKey: 24
+  resetKey: 25
+  showOverlay: 1
+--- !u!114 &1263499255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263499248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a141ea163cd17c45a8118738adc9927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMadness
+  startMadness: 0
+  deathThresholdPercent: 80
+  depletionRate: 5
+  defaultHitAmount: 25
+  passiveGainRate: 0.5
+  recoveryDelay: 3
+  currentMadness: 0
 --- !u!1001 &1294385232
 PrefabInstance:
   m_ObjectHideFlags: 0

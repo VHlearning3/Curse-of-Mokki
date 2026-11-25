@@ -51,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Hiding")]
     [SerializeField] private bool isHidden;
     [SerializeField] private int hidingSpotsNearby;
+    private PlayerMadness madness;
     public bool IsHidden => isHidden;
 
     // ----- Sounds -----
@@ -65,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     { 
         controller = GetComponent<CharacterController>();
+        madness = GetComponent<PlayerMadness>();
         playerCamera = cameraTransform.GetComponent<Camera>();
         cameraHeight = standHeight;
         Cursor.lockState = CursorLockMode.Locked;
@@ -148,6 +150,18 @@ public class PlayerMovement : MonoBehaviour
         if (Keyboard.current.eKey.wasPressedThisFrame && hidingSpotsNearby > 0)
         {
             isHidden = !isHidden;
+        }
+
+        if (madness != null)
+        {
+            if (isHidden)
+            {
+                madness.BeginDrain(this, 1f);
+            }
+            else
+            {
+                madness.EndDrain(this);
+            }
         }
     }
 
