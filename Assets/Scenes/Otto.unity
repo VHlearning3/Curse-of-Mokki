@@ -987,6 +987,7 @@ GameObject:
   - component: {fileID: 1263499249}
   - component: {fileID: 1263499255}
   - component: {fileID: 1263499254}
+  - component: {fileID: 1263499256}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1027,6 +1028,7 @@ MonoBehaviour:
   freezeMovementWhileLooking: 1
   isHidden: 0
   hidingSpotsNearby: 0
+  hideDrainMultiplier: 0.3
   stepDistance: 2
   sneakStepVolume: 0.4
   stepPitchVariation: 0.12
@@ -1166,6 +1168,19 @@ MonoBehaviour:
   passiveGainRate: 0.5
   recoveryDelay: 3
   currentMadness: 0
+--- !u!114 &1263499256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263499248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a5cc5bcf0e542428ecd2fa9e5e34e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
+  cameraTransform: {fileID: 547341079}
 --- !u!1001 &1294385232
 PrefabInstance:
   m_ObjectHideFlags: 0

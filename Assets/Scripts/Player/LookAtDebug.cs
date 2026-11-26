@@ -7,11 +7,11 @@ public class LookAtDebug : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private float seconds = 3f;
 
-    private PlayerMovement player;
+    private PlayerCamera player;
 
     void Awake()
     {
-        player = FindFirstObjectByType<PlayerMovement>();
+        player = FindFirstObjectByType<PlayerCamera>();
     }
 
     void Update()
