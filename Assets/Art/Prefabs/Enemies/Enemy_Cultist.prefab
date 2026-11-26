@@ -192,7 +192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMadnessAura
   playerMadness: {fileID: 0}
   auraEnabled: 1
-  radius: 8
+  radius: 4
   drainMultiplier: 1
   needsLineOfSight: 0
   centreHeight: 1.2
