@@ -11,36 +11,22 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     private CharacterController controller;
     private float fallSpeed;
+    private bool controlEnabled = true;
+    public float WalkSpeed => walkSpeed;
+    public bool IsSprinting => Keyboard.current.leftShiftKey.isPressed && !isHidden && !isCrouching;
+    public bool ControlEnabled => controlEnabled;
 
     [Header("Crouch")]
     [SerializeField] private float standColliderHeight = 2f;
     [SerializeField] private float crouchColliderHeight = 1.2f;
+    [SerializeField] private float crouchSmooth = 8f;
     [SerializeField] private bool isCrouching;
+    public bool IsCrouching => isCrouching;
 
     // ----- Camera -----
     [Header("Camera")]
-    [SerializeField] private Transform cameraTransform;
-    private PlayerCamera cameraController;
-
-    [Header("Camera height")]
-    [SerializeField] private float standHeight = 0.6f;
-    [SerializeField] private float crouchHeight = 0.1f;
-    [SerializeField] private float hideHeight = -0.2f;
-    [SerializeField] private float cameraSmooth = 8f;
-    private float cameraHeight;
-
-    [Header("Field of view")]
-    [SerializeField] private float normalFov = 50f;
-    [SerializeField] private float sprintFov = 60f;
-    private Camera playerCamera;
-
-    [Header("Head bob")]
-    [SerializeField] private float bobAmount = 0.05f;
-    [SerializeField] private float bobFrequency = 3f;
-    private float bobTimer;
-
-    [Header("Forced look")]
     [SerializeField] private bool freezeMovementWhileLooking = true;
+    private PlayerCamera cameraController;
 
     // ----- Hiding -----
     [Header("Hiding")]
@@ -69,9 +55,12 @@ public class PlayerMovement : MonoBehaviour
         {
             cameraController = gameObject.AddComponent<PlayerCamera>();
         }
-        playerCamera = cameraTransform.GetComponent<Camera>();
-        cameraHeight = standHeight;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void SetControlEnabled(bool value)
+    {
+        controlEnabled = value;
     }
 
     void Update()
@@ -80,14 +69,15 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
+        if (!controlEnabled)
+        {
+            return;
+        }
 
         HandleHiding();
         HandleCrouch();
-        HandleCameraHeight();
-        HandleFieldOfView();
         HandleMovement();
         HandleFootsteps();
-
     }
 
     void HandleHiding()
@@ -108,50 +98,6 @@ public class PlayerMovement : MonoBehaviour
                 madness.EndDrain(this);
             }
         }
-    }
-
-    void HandleCameraHeight()
-    {
-        float targetHeight;
-        if (isHidden)
-        {
-            targetHeight = hideHeight;
-        }
-        else if (isCrouching)
-        {
-            targetHeight = crouchHeight;
-        }
-        else
-        {
-            targetHeight = standHeight;
-        }
-        cameraHeight = Mathf.Lerp(cameraHeight, targetHeight, cameraSmooth * Time.deltaTime);
-
-        Vector3 flatVelocity = controller.velocity;
-        flatVelocity.y = 0f;
-        float moveSpeed = flatVelocity.magnitude;
-        if (isHidden)
-        {
-            moveSpeed = 0f;
-        }
-        bobTimer += moveSpeed * bobFrequency * Time.deltaTime;
-        float bobOffset = Mathf.Sin(bobTimer) * bobAmount * (moveSpeed / walkSpeed);
-
-        cameraTransform.localPosition = new Vector3(0f, cameraHeight + bobOffset, 0f);
-    }
-
-    void HandleFieldOfView()
-    {
-        float targetFov;
-        if (Keyboard.current.leftShiftKey.isPressed && !isHidden && !isCrouching)
-        {
-            targetFov = sprintFov;
-        }
-        else
-        {
-            targetFov = normalFov;
-        }
-        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFov, cameraSmooth * Time.deltaTime);
     }
 
     void HandleMovement()
@@ -203,21 +149,28 @@ public class PlayerMovement : MonoBehaviour
         {
             fallSpeed = -2f;
         }
+
         fallSpeed += gravity * Time.deltaTime;
 
         Vector3 velocity = direction * currentSpeed;
         velocity.y = fallSpeed;
         controller.Move(velocity * Time.deltaTime);
     }
+
+    public float GetGroundSpeed()
+    {
+        Vector3 flatVelocity = controller.velocity;
+        flatVelocity.y = 0f;
+        return flatVelocity.magnitude;
+    }
+
     void HandleFootsteps()
     {
         if (isHidden)
         {
             return;
         }
-        Vector3 flatVelocity = controller.velocity;
-        flatVelocity.y = 0f;
-        float moveSpeed = flatVelocity.magnitude;
+        float moveSpeed = GetGroundSpeed();
         stepProgress += moveSpeed * Time.deltaTime;
 
         if (stepProgress > stepDistance)
@@ -284,7 +237,7 @@ public class PlayerMovement : MonoBehaviour
         {
             targetColliderHeight = standColliderHeight;
         }
-        controller.height = Mathf.Lerp(controller.height, targetColliderHeight, cameraSmooth * Time.deltaTime);
+        controller.height = Mathf.Lerp(controller.height, targetColliderHeight, crouchSmooth * Time.deltaTime);
         controller.center = new Vector3 (0f, (controller.height - standColliderHeight) / 2f, 0f);
     }
     

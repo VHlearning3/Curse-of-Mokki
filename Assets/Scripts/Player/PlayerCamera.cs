@@ -5,6 +5,7 @@ public class PlayerCamera : MonoBehaviour
 {
     // ----- Camera -----
     [SerializeField] private Transform cameraTransform;
+    private Camera playerCamera;
     private PlayerMovement movement;
 
     [Header("Mouse look")]
@@ -17,6 +18,22 @@ public class PlayerCamera : MonoBehaviour
     private Vector3 lookAtPoint;
     public bool IsLookingAt => lookAtTimer > 0f;
 
+    [Header("Camera height")]
+    [SerializeField] private float standHeight = 0.6f;
+    [SerializeField] private float crouchHeight = 0.1f;
+    [SerializeField] private float hideHeight = -0.2f;
+    [SerializeField] private float cameraSmooth = 8f;
+    private float cameraHeight;
+
+    [Header("Head bob")]
+    [SerializeField] private float bobAmount = 0.05f;
+    [SerializeField] private float bobFrequency = 3f;
+    private float bobTimer;
+
+    [Header("Field of view")]
+    [SerializeField] private float normalFov = 50f;
+    [SerializeField] private float sprintFov = 60f;
+
     void Awake()
     {
         movement = GetComponent<PlayerMovement>();
@@ -24,6 +41,8 @@ public class PlayerCamera : MonoBehaviour
         {
             cameraTransform = GetComponentInChildren<Camera>().transform;
         }
+        playerCamera = cameraTransform.GetComponent<Camera>();
+        cameraHeight = standHeight;
     }
 
     void Start()
@@ -48,12 +67,14 @@ public class PlayerCamera : MonoBehaviour
         {
             return;
         }
-        if (movement != null && !movement.enabled)
+        if (!movement.enabled || !movement.ControlEnabled)
         {
             return;
         }
 
         HandleLook();
+        HandleCameraHeight();
+        HandleFieldOfView();
     }
 
     void HandleLook()
@@ -94,5 +115,47 @@ public class PlayerCamera : MonoBehaviour
 
         lookAngle = Mathf.Lerp(lookAngle, targetPitch, lookAtSmooth * Time.deltaTime);
         cameraTransform.localRotation = Quaternion.Euler(lookAngle, 0f, 0f);
+    }
+
+    void HandleCameraHeight()
+    {
+        float targetHeight;
+        if (movement.IsHidden)
+        {
+            targetHeight = hideHeight;
+        }
+        else if (movement.IsCrouching)
+        {
+            targetHeight = crouchHeight;
+        }
+        else
+        {
+            targetHeight = standHeight;
+        }
+        cameraHeight = Mathf.Lerp(cameraHeight, targetHeight, cameraSmooth * Time.deltaTime);
+
+        float moveSpeed = movement.GetGroundSpeed();
+        if (movement.IsHidden)
+        {
+            moveSpeed = 0f;
+        }
+        bobTimer += moveSpeed * bobFrequency * Time.deltaTime;
+        float bobOffset = Mathf.Sin(bobTimer) * bobAmount * (moveSpeed / movement.WalkSpeed);
+
+        cameraTransform.localPosition = new Vector3(0f, cameraHeight + bobOffset, 0f);
+    }
+
+    void HandleFieldOfView()
+    {
+        float targetFov;
+        if (movement.IsSprinting)
+        {
+            targetFov = sprintFov;
+        }
+        else
+        {
+            targetFov = normalFov;
+        }
+        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFov, cameraSmooth * Time.deltaTime);
     }
 }
