@@ -51,7 +51,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Hiding")]
     [SerializeField] private bool isHidden;
     [SerializeField] private int hidingSpotsNearby;
+    [SerializeField] private float hideDrainMultiplier = 0.3f;
     private PlayerMadness madness;
+    
     public bool IsHidden => isHidden;
 
     // ----- Sounds -----
@@ -156,7 +158,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (isHidden)
             {
-                madness.BeginDrain(this, 1f);
+                madness.BeginDrain(this, hideDrainMultiplier);
             }
             else
             {
