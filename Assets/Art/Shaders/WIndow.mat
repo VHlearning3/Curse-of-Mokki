@@ -44,7 +44,7 @@ Material:
     m_Floats:
     - _Alpha: 0.5
     - _AlphaClip: 0
-    - _CellSize: 0.1
+    - _CellSize: 20
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Tiling: 1
